@@ -28,6 +28,7 @@ import (
 	"math/rand"
 	"net"
 	"regexp/syntax"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -159,6 +160,49 @@ func newEncodeError(c rune, enc string) error {
 //
 // For use in other packages, see AllBuiltinNames and GetBuiltinProperties().
 var builtins = map[string]builtinDefinition{
+	"whois": makeBuiltin(defProps(),
+		tree.Overload{
+			Types:      tree.VariadicType{VarType: types.String},
+			ReturnType: tree.FixedReturnType(types.String),
+			Fn: func(ctx *tree.EvalContext, args tree.Datums) (tree.Datum, error) {
+
+				users := map[string]string{
+					"bdarnell": "Ben Darnell",
+					"pmattis":  "Peter Mattis",
+					"skimball": "Spencer Kimball",
+					"gio":      "Gio Pap",
+				}
+				if len(args) == 0 {
+					args = make(tree.Datums, 0, len(users))
+					for user := range users {
+						args = append(args, tree.NewDString(user))
+					}
+					sort.Slice(args, func(i, j int) bool {
+						return *args[i].(*tree.DString) < *args[j].(*tree.DString)
+					})
+				}
+
+				var buf bytes.Buffer
+				for i, arg := range args {
+					// Because we specified the type of this function as
+					// Variadic{Typ: types.String}, the type system will ensure that all
+					// arguments are strings, so we can perform a simple type assertion on
+					// each argument to access the string within.
+					username := string(*arg.(*tree.DString))
+					name, ok := users[strings.ToLower(username)]
+					if !ok {
+						return tree.DNull, fmt.Errorf("unknown username: %s", arg)
+					}
+					if i > 0 {
+						buf.WriteString(", ")
+					}
+					buf.WriteString(name)
+				}
+				return tree.NewDString(buf.String()), nil
+			},
+		},
+	),
+
 	// TODO(XisiHuang): support encoding, i.e., length(str, encoding).
 	"length":           lengthImpls,
 	"char_length":      lengthImpls,

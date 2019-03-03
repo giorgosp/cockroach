@@ -1,0 +1,9 @@
+query T
+select whois('pmattis')
+----
+Peter Mattis
+
+query T
+select whois()
+----
+Ben Darnell, Gio Pap,  Peter Mattis, Spencer Kimball

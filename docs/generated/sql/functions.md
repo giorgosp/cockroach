@@ -922,7 +922,8 @@ has no relationship with the commit order of concurrent transactions.</p>
 <p>For example, <code>translate('doggie', 'dog', '123');</code> returns <code>1233ie</code>.</p>
 </span></td></tr>
 <tr><td><code>upper(val: <a href="string.html">string</a>) &rarr; <a href="string.html">string</a></code></td><td><span class="funcdesc"><p>Converts all characters in <code>val</code> to their to their upper-case equivalents.</p>
-</span></td></tr></tbody>
+</span></td></tr>
+<tr><td><code>whois(<a href="string.html">string</a>...) &rarr; <a href="string.html">string</a></code></td><td></td></tr></tbody>
 </table>
 
 ### System info functions
