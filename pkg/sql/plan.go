@@ -661,6 +661,8 @@ func (p *planner) newPlan(
 		return p.DropSequence(ctx, n)
 	case *tree.DropUser:
 		return p.DropUser(ctx, n)
+	case *tree.Frobnicate:
+		return p.Frobnicate(ctx, n)
 	case *tree.Explain:
 		return p.Explain(ctx, n)
 	case *tree.Grant:

@@ -17,6 +17,7 @@ stmt ::=
 	| release_stmt
 	| nonpreparable_set_stmt
 	| transaction_stmt
+	| frobnicate_stmt
 	| 
 
 preparable_stmt ::=
@@ -91,6 +92,11 @@ transaction_stmt ::=
 	| commit_stmt
 	| rollback_stmt
 	| abort_stmt
+
+frobnicate_stmt ::=
+	'FROBNICATE' 'CLUSTER'
+	| 'FROBNICATE' 'SESSION'
+	| 'FROBNICATE' 'ALL'
 
 alter_stmt ::=
 	alter_ddl_stmt
@@ -624,6 +630,7 @@ unreserved_keyword ::=
 	| 'FOLLOWING'
 	| 'FORCE_INDEX'
 	| 'FUNCTION'
+	| 'FROBNICATE'
 	| 'GLOBAL'
 	| 'GRANTS'
 	| 'GROUPS'

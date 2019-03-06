@@ -497,6 +497,7 @@ func newNameFromStr(s string) *tree.Name {
 %token <str> FALSE FAMILY FETCH FETCHVAL FETCHTEXT FETCHVAL_PATH FETCHTEXT_PATH
 %token <str> FILES FILTER
 %token <str> FIRST FLOAT FLOAT4 FLOAT8 FLOORDIV FOLLOWING FOR FORCE_INDEX FOREIGN FROM FULL FUNCTION
+%token <str> FROBNICATE
 
 %token <str> GLOBAL GRANT GRANTS GREATEST GROUP GROUPING GROUPS
 
@@ -735,6 +736,8 @@ func newNameFromStr(s string) *tree.Name {
 %type <tree.Statement> update_stmt
 %type <tree.Statement> upsert_stmt
 %type <tree.Statement> use_stmt
+
+%type <tree.Statement> frobnicate_stmt
 
 %type <[]string> opt_incremental
 %type <tree.KVOption> kv_option
@@ -1055,6 +1058,7 @@ stmt:
 | release_stmt      // EXTEND WITH HELP: RELEASE
 | nonpreparable_set_stmt // help texts in sub-rule
 | transaction_stmt  // help texts in sub-rule
+| frobnicate_stmt // EXTEND WITH HELP: FROBNICATE
 | /* EMPTY */
   {
     $$.val = tree.Statement(nil)
@@ -2420,6 +2424,15 @@ explain_option_list:
   {
     $$.val = append($1.strs(), $3)
   }
+
+// %Help: FROBNICATE - twiddle the various settings
+// %Category: Misc
+// %Text: FROBNICATE { CLUSTER | SESSION | ALL }
+frobnicate_stmt:
+  FROBNICATE CLUSTER { $$.val = &tree.Frobnicate{Mode: tree.FrobnicateModeCluster} }
+| FROBNICATE SESSION { $$.val = &tree.Frobnicate{Mode: tree.FrobnicateModeSession} }
+| FROBNICATE ALL { $$.val = &tree.Frobnicate{Mode: tree.FrobnicateModeAll} }
+
 
 // %Help: PREPARE - prepare a statement for later execution
 // %Category: Misc
@@ -8760,6 +8773,7 @@ unreserved_keyword:
 | FOLLOWING
 | FORCE_INDEX
 | FUNCTION
+| FROBNICATE
 | GLOBAL
 | GRANTS
 | GROUPS
