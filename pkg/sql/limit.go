@@ -29,15 +29,17 @@ type limitNode struct {
 	plan       planNode
 	countExpr  tree.TypedExpr
 	offsetExpr tree.TypedExpr
+	stepExpr   tree.TypedExpr
 	evaluated  bool
 	count      int64
 	offset     int64
+	step       int64
 }
 
 // limit constructs a limitNode based on the LIMIT and OFFSET clauses.
 func (p *planner) Limit(ctx context.Context, n *tree.Limit) (*limitNode, error) {
-	if n == nil || (n.Count == nil && n.Offset == nil) {
-		// No LIMIT nor OFFSET; there is nothing special to do.
+	if n == nil || (n.Count == nil && n.Offset == nil && n.Step == nil) {
+		// No LIMIT nor OFFSET nor STEP; there is nothing special to do.
 		return nil, nil
 	}
 
@@ -50,6 +52,7 @@ func (p *planner) Limit(ctx context.Context, n *tree.Limit) (*limitNode, error) 
 	}{
 		{"LIMIT", n.Count, &res.countExpr},
 		{"OFFSET", n.Offset, &res.offsetExpr},
+		{"STEP", n.Step, &res.stepExpr},
 	}
 
 	// We need to save and restore the previous value of the field in

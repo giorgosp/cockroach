@@ -634,7 +634,7 @@ func (node *Order) Format(ctx *FmtCtx) {
 
 // Limit represents a LIMIT clause.
 type Limit struct {
-	Offset, Count Expr
+	Offset, Count, Step Expr
 }
 
 // Format implements the NodeFormatter interface.
