@@ -15,6 +15,7 @@ import (
 
 	"github.com/cockroachdb/cockroach/pkg/keys"
 	"github.com/cockroachdb/cockroach/pkg/roachpb"
+	"github.com/cockroachdb/cockroach/pkg/settings/cluster"
 	"github.com/cockroachdb/cockroach/pkg/storage/batcheval/result"
 	"github.com/cockroachdb/cockroach/pkg/storage/engine"
 	"github.com/cockroachdb/cockroach/pkg/storage/engine/enginepb"
@@ -165,7 +166,8 @@ func EvalAddSSTable(
 	// compute the stats for these "skipped" KVs on-the-fly while checking for the
 	// collision condition and returning their stats. The final stats would then
 	// be ms + stats - skipped_stats, and this would be accurate.
-	stats.ContainsEstimates = true
+	_ = cluster.VersionContainsEstimatesCounter // see for info on ContainsEstimates migration
+	stats.ContainsEstimates++
 	ms.Add(stats)
 
 	return result.Result{
